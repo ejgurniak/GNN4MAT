@@ -1,0 +1,17 @@
+# Usage: conda env create --name alt-cegan -f alt_environment.yml
+
+name: alt-cegan
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.11.7
+  - pytorch::ignite=0.4.13
+  - scikit-learn=1.4.0
+  - pymatgen=2023.12.18
+  - pydantic=2.5.3
+  - natsort=8.4.0
+  - pytorch=2.1.0
+  - torchvision=0.16.1
+  - torchaudio=2.1.0
+  - cudatoolkit=11.6.0
