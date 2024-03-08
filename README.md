@@ -1,0 +1,1 @@
+# CuZr-metallic-glass-GCNNs
