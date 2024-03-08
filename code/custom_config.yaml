@@ -11,7 +11,7 @@ learning_rate: 0.01
 n_classification: 6
 n_conv_edge: 1
 neighbors: 15
-num_workers: 4
+num_workers: 1
 pin_memory: true
 rcut: 6
 resume: true
