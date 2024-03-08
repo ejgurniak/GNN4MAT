@@ -29,6 +29,8 @@ pip install torch_geometric
 
 ## running the code
 
+Note: our code builds on the code found here: https://github.com/sbanik2/CEGANN
+
 option 1: run the Crystal Edge Graph Attention Neural Network, by Banik et al
 
 ```
