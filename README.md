@@ -5,6 +5,12 @@
 
 ## IMPORTANT: make sure all modules for your computer system are properly loaded. This is system specific.
 
+## before you begin: clone the repository from GitHub
+
+```
+git clone https://github.com/ejgurniak/CuZr-metallic-glass-GCNNs
+```
+
 ## environment creation
 
 step 1: 
