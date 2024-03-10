@@ -43,7 +43,7 @@ Before running the code, you need to extract the datasets of interest. For the d
 tar -xzvf ./datasets/train_1020samples.tar.gz
 ```
 
-Also copy the code from the code directory to the directory in which you would like to run the code and store the results. For example:
+Also copy the code from the code directory to the directory in which you would like to run the code and store the results. For example, the following will copy the python code to the current directory:
 ```
 cp ./code/* .
 ```
