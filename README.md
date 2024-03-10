@@ -50,7 +50,7 @@ cp ./code/* .
 
 ### choose which GCNN you want to run. There are 4 options below:
 
-option 1: run the Crystal Edge Graph Attention Neural Network, by Banik et al
+option 1: run the Crystal Edge Graph Attention Neural Network, by Banik et al (https://github.com/sbanik2/CEGANN)
 
 ```
 python train.py ./train_1020samples model_checkpoints/ log.model GANN
