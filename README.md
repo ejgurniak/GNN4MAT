@@ -37,28 +37,39 @@ pip install torch_geometric
 
 Note: our code builds on the code found here: https://github.com/sbanik2/CEGANN
 
+Before running the code, you need to extract the datasets of interest. For the dataset of 1020 samples, that is:
+
+```
+tar -xzvf ./datasets/train_1020samples.tar.gz
+```
+
+Also copy the code from the code directory to the directory in which you would like to run the code and store the results. For example:
+```
+cp ./code/* .
+```
+
 option 1: run the Crystal Edge Graph Attention Neural Network, by Banik et al
 
 ```
-python train.py ./train model_checkpoints/ log.model GANN
+python train.py ./datasets/train_1020samples model_checkpoints/ log.model GANN
 ```
 
 option 2: run our Graph Isomorphism Network
 
 ```
-python train.py ./train model_checkpoints log.model GIN
+python train.py ./datasets/train_1020samples model_checkpoints log.model GIN
 ```
 
 option 3: run our GraphSAGE model
 
 ```
-python train.py ./train model_checkpoints log.model SAGE
+python train.py ./datasets/train_1020samples model_checkpoints log.model SAGE
 ```
 
 option 4: run our Relational Graph Convolutional Network
 
 ```
-python train.py ./train model_checkpoints log.model RGCN
+python train.py ./datasets/train_1020samples model_checkpoints log.model RGCN
 ```
 
 ### explanation of the above commands:
