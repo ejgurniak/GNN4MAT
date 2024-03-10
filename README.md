@@ -86,17 +86,25 @@ log.model: text file to save training data, feel free to change
 
 RGCN: user-input to determine which neural network to use
 
-## heterogeneous mode
+## Heterogeneous mode: choose which heterogeneous model to run, there are three options below
 
-to run a heterogeneous version of a model, add the keyword "heterogeneous" to the end of the command to run the script
+Option 1: Run the Crystal Edge Graph Attention Neural Network in heterogeneous mode. Note: the original model by Banik et al (https://github.com/sbanik2/CEGANN) did not include a heterogeneous mode, this is something we added.
 
-for example:
+```
+python train.py ./train_1020samples model_checkpoints log.model GANN heterogeneous
+```
 
+Option 2: Run our GraphSAGE model in heterogeneous mode:
 ```
 python train.py ./train_1020samples model_checkpoints log.model SAGE heterogeneous
 ```
 
-this will run the heterogeneous version of our GraphSAGE model. Note: RGCN is by nature heterogeneous, so we do not run RGCN in heterogeneous mode.
+Option 3: Run our Graph Isomorphism Network in heterogeneous mode:
+```
+python train.py ./train_1020samples model_checkpoints log.model GIN heterogeneous
+```
+
+Note: RGCN is by nature heterogeneous, so we do not run RGCN in heterogeneous mode.
 
 ## prediction on the test dataset
 
