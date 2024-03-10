@@ -51,25 +51,25 @@ cp ./code/* .
 option 1: run the Crystal Edge Graph Attention Neural Network, by Banik et al
 
 ```
-python train.py ./datasets/train_1020samples model_checkpoints/ log.model GANN
+python train.py ./train_1020samples model_checkpoints/ log.model GANN
 ```
 
 option 2: run our Graph Isomorphism Network
 
 ```
-python train.py ./datasets/train_1020samples model_checkpoints log.model GIN
+python train.py ./train_1020samples model_checkpoints log.model GIN
 ```
 
 option 3: run our GraphSAGE model
 
 ```
-python train.py ./datasets/train_1020samples model_checkpoints log.model SAGE
+python train.py ./train_1020samples model_checkpoints log.model SAGE
 ```
 
 option 4: run our Relational Graph Convolutional Network
 
 ```
-python train.py ./datasets/train_1020samples model_checkpoints log.model RGCN
+python train.py ./train_1020samples model_checkpoints log.model RGCN
 ```
 
 ### explanation of the above commands:
@@ -91,7 +91,7 @@ to run a heterogeneous version of a model, add the keyword "heterogeneous" to th
 for example:
 
 ```
-python train.py ./train model_checkpoints log.model SAGE heterogeneous
+python train.py ./train_1020samples model_checkpoints log.model SAGE heterogeneous
 ```
 
 this will run the heterogeneous version of our GraphSAGE model
