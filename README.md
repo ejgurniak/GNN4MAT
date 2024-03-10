@@ -76,7 +76,7 @@ python train.py ./datasets/train_1020samples model_checkpoints log.model RGCN
 
 train.py: name of the code
 
-./train: path to the training samples. The number of samples in this directory is the number of graphs that the algorithm will load. It is also important to control the train_size and val_size parameters in custom_config.yaml. The first train_size samples are used for training and the last val_size samples are used for validation. Please be careful to make sure you do not overlap and use samples in both training and validation.
+./datasets/train_1020samples: path to the training samples. The number of samples in this directory is the number of graphs that the algorithm will load. It is also important to control the train_size and val_size parameters in custom_config.yaml. The first train_size samples are used for training and the last val_size samples are used for validation. Please be careful to make sure you do not overlap and use samples in both training and validation.
 
 model_checkpoints: name of the directory to save the checkpoints, feel free to change
 
