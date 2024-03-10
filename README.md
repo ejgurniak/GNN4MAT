@@ -48,6 +48,8 @@ Also copy the code from the code directory to the directory in which you would l
 cp ./code/* .
 ```
 
+### choose which GCNN you want to run. There are 4 options below:
+
 option 1: run the Crystal Edge Graph Attention Neural Network, by Banik et al
 
 ```
