@@ -1,7 +1,8 @@
 # CuZr-metallic-glass-GCNNs
 
-# Run four different neural networks with one source code
+# Run seven different neural networks with one source code
 
+For non-heterogeneous models, go to "Homogeneous models" section below. For heterogeneous models, go to "Heterogeneous models" section below.
 
 ## IMPORTANT: make sure all modules for your computer system are properly loaded. This is system specific.
 
@@ -48,7 +49,7 @@ Also copy the code from the code directory to the directory in which you would l
 cp ./code/* .
 ```
 
-### choose which GCNN you want to run. There are 4 options below:
+### Homogeneous models: choose which GCNN you want to run. There are 4 options below:
 
 option 1: run the Crystal Edge Graph Attention Neural Network, by Banik et al (https://github.com/sbanik2/CEGANN)
 
@@ -86,7 +87,7 @@ log.model: text file to save training data, feel free to change
 
 RGCN: user-input to determine which neural network to use
 
-## Heterogeneous mode: choose which heterogeneous model to run, there are three options below
+## Heterogeneous models: choose which heterogeneous model to run, there are three options below
 
 This code is designed for CuZr alloys. To modify for a different alloy, change hetgraph.py to align with your alloy.
 
