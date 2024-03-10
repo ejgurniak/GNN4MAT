@@ -105,3 +105,12 @@ python predict.py ./target ./model_checkpoints/model_best.pt GIN
 ```
 
 this will run a prediction job on the homogeneous version of our GIN model
+
+## resume training
+
+If the model training does not converge within the compute time you requested, you can restart the training from a given checkpoint file. To do this, set resume to True in custom_config.yaml. Also copy the checkpoint of choice to ./model_checkpoints/checkpoint.pt. For example, the following will copy the checkpoint from epoch 51 to checkpoint.pt so the model will continue training from epoch 51:
+```
+cp ./model_checkpoints/checkpoint.pt_51 ./model_checkpoints/checkpoint.pt
+```
+
+Replace the "51" in the above command for the epoch from which you would like to resume training
