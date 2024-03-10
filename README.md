@@ -88,6 +88,8 @@ RGCN: user-input to determine which neural network to use
 
 ## Heterogeneous mode: choose which heterogeneous model to run, there are three options below
 
+This code is designed for CuZr alloys. To modify for a different alloy, change hetgraph.py to align with your alloy.
+
 Option 1: Run the Crystal Edge Graph Attention Neural Network in heterogeneous mode. Note: the original model by Banik et al (https://github.com/sbanik2/CEGANN) did not include a heterogeneous mode, this is something we added.
 
 ```
