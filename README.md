@@ -96,7 +96,7 @@ for example:
 python train.py ./train_1020samples model_checkpoints log.model SAGE heterogeneous
 ```
 
-this will run the heterogeneous version of our GraphSAGE model
+this will run the heterogeneous version of our GraphSAGE model. Note: RGCN is by nature heterogeneous, so we do not run RGCN in heterogeneous mode.
 
 ## prediction on the test dataset
 
