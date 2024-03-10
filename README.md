@@ -88,7 +88,7 @@ RGCN: user-input to determine which neural network to use
 
 ## heterogeneous mode
 
-to run a heterogeneous version of a model, add the keyword "heterogeneous" to the command to run the script
+to run a heterogeneous version of a model, add the keyword "heterogeneous" to the end of the command to run the script
 
 for example:
 
