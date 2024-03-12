@@ -1,6 +1,6 @@
 # GANN4MAT: Graph Neural Networks for Materials
 
-# Run seven different neural networks with one source code
+## Run seven different graph neural networks for materials science with one source code
 
 For non-heterogeneous models, go to "Homogeneous models" section below. For heterogeneous models, go to "Heterogeneous models" section below.
 
