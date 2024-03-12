@@ -1,4 +1,4 @@
-# CuZr-metallic-glass-GCNNs
+# GANN4MAT: Graph Neural Networks for Materials
 
 # Run seven different neural networks with one source code
 
