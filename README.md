@@ -1,4 +1,4 @@
-# GANN4MAT: Graph Neural Networks for Materials
+# GNN4MAT: Graph Neural Networks for Materials
 
 ## Run seven different graph neural networks for materials science with one source code
 
