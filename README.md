@@ -9,7 +9,7 @@ For non-heterogeneous models, go to "Homogeneous models" section below. For hete
 ## before you begin: clone the repository from GitHub
 
 ```
-git clone https://github.com/ejgurniak/CuZr-metallic-glass-GCNNs
+git clone https://github.com/ejgurniak/GNN4MAT
 ```
 
 ## environment creation
