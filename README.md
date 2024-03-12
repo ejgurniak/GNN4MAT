@@ -2,7 +2,7 @@
 
 ## Run seven different graph neural networks for materials science with one source code
 
-For non-heterogeneous models, go to "Homogeneous models" section below. For heterogeneous models, go to "Heterogeneous models" section below.
+For homogeneous models, go to "Homogeneous models" section below. For heterogeneous models, go to "Heterogeneous models" section below.
 
 ## IMPORTANT: make sure all modules for your computer system are properly loaded. This is system specific.
 
