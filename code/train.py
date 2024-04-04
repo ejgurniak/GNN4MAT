@@ -194,7 +194,8 @@ def train(
                 outputs = model(data2) #HERE - try just one argument
                 loss = criterion(outputs, labels)
                 # Accumulate the loss across batches
-                val_loss += loss.item() * settings.batch_size #CHECK HERE - may be incorrect
+                val_loss += loss.item() * settings.batch_size #remember: PyTorch Cross Entropy Loss divides by number of items with default parameter reduction='mean'
+                # if you choose reduction='sum' when setting up cross entropy loss, do not need to multiply by batch_size
         # Compute the average loss across the validation set
         val_loss = val_loss / len(val_loader)
 
