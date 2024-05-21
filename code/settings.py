@@ -40,6 +40,8 @@ class Settings(BaseModel):
     bond_fea_len: int = 80
     angle_fea_len: int = 80
     n_conv_edge: int = 3
+    n_conv_angle: int = 2
+    dropout_prob: float = 0.5
 
     gbf_bond: dict = {'dmin': 0, 'dmax': 8, 'steps': bond_fea_len}
     gbf_angle: dict = {'dmin': -1, 'dmax': 1, 'steps': angle_fea_len}
@@ -47,6 +49,7 @@ class Settings(BaseModel):
     h_fea_edge: int = 128  # hidden feature len
     h_fea_angle: int = 128
     # Number of hidden layer
+    num_MLP: int = 0 #EJG edit - the original version does not have a Multi-Layer Perceptron
 
     @property
     def pooling(self):

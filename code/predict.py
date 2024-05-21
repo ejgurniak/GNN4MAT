@@ -113,6 +113,7 @@ if current_model == "GANN":
         n_classification=settings.n_classification,
         pooling=settings.pooling,
         embedding=True,
+        num_MLP=settings.num_MLP,
     )
 elif current_model == "GIN":
     print("GIN chosen")
@@ -120,10 +121,15 @@ elif current_model == "GIN":
     net = GIN(
         settings.gbf_bond,
         settings.gbf_angle,
+        n_conv_edge=settings.n_conv_edge,
+        n_conv_angle=settings.n_conv_angle,
+        h_fea_edge=settings.h_fea_edge,
+        h_fea_angle=settings.h_fea_angle,
         n_classification=settings.n_classification,
         neigh=settings.neighbors,
         pooling=settings.pooling,
         embedding=True,
+        num_MLP=settings.num_MLP,
     )
 elif current_model == "SAGE":
     print("GraphSAGE chosen")
@@ -131,10 +137,16 @@ elif current_model == "SAGE":
     net = mySAGE(
         settings.gbf_bond,
         settings.gbf_angle,
+        n_conv_edge=settings.n_conv_edge,
+        n_conv_angle=settings.n_conv_angle,
+        h_fea_edge=settings.h_fea_edge,
+        h_fea_angle=settings.h_fea_angle,
         n_classification=settings.n_classification,
         neigh=settings.neighbors,
         pool=settings.pooling,
         embedding=True,
+        dropout_prob=settings.dropout_prob,
+        num_MLP=settings.num_MLP,
     )
 elif current_model == "RGCN":
     print("RGCN chosen")

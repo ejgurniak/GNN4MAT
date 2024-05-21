@@ -209,6 +209,82 @@ class ConvEdge(nn.Module):
 
         return edge_fea_summed
 
+class EmilyLin(nn.Module):
+    def __init__(self, feature_length):
+
+        super(EmilyLin, self).__init__()
+
+        self.feature_length = feature_length
+        self.linear_layer = nn.Linear(
+            self.feature_length, self.feature_length
+        )
+    def forward(self, feature):
+        return self.linear_layer(feature)
+
+class EmilySAGE_bond(nn.Module):
+    def __init__(self, feature_hidden_size):
+
+        super(EmilySAGE_bond, self).__init__()
+
+        self.feature_hidden_size = feature_hidden_size
+        self.sage_conv = SAGEConv(
+            self.feature_hidden_size, self.feature_hidden_size
+        )
+    def forward(self, feature, edge_index):
+        return self.sage_conv(feature, edge_index)
+
+class EmilySAGE_angle(nn.Module):
+    def __init__(self, feature_hidden_size):
+
+        super(EmilySAGE_angle, self).__init__()
+
+        self.feature_hidden_size = feature_hidden_size
+        self.sage_conv = SAGEConv(
+            self.feature_hidden_size, self.feature_hidden_size
+        )
+
+    def forward(self, feature, edge_index):
+        return self.sage_conv(feature, edge_index)
+
+class EmilyGIN_bond(nn.Module):
+    def __init__(self, feature_hidden_size):
+
+        super(EmilyGIN_bond, self).__init__()
+
+        self.feature_hidden_size = feature_hidden_size
+        self.nn_bond = nn.Sequential(
+            nn.Linear(self.feature_hidden_size, self.feature_hidden_size),
+            nn.ReLU(),
+            nn.Linear(self.feature_hidden_size, self.feature_hidden_size),
+        )
+        self.conv_bond = GINConv(self.nn_bond)
+        self.bn_bond = nn.BatchNorm1d(self.feature_hidden_size)
+
+    def forward(self, feature, edge_index):
+        feature_out = F.relu(self.conv_bond(feature, edge_index))
+        feature_out = self.bn_bond(feature_out)
+        return feature_out
+
+class EmilyGIN_angle(nn.Module):
+    def __init__(self, feature_hidden_size):
+
+        super(EmilyGIN_angle, self).__init__()
+
+        self.feature_hidden_size = feature_hidden_size
+        self.nn_angle = nn.Sequential(
+            nn.Linear(self.feature_hidden_size, self.feature_hidden_size),
+            nn.ReLU(),
+            nn.Linear(self.feature_hidden_size, self.feature_hidden_size),
+        )
+        self.conv_angle = GINConv(self.nn_angle)
+        self.bn_angle = nn.BatchNorm1d(self.feature_hidden_size)
+    
+    def forward(self, feature, edge_index):
+        feature_out =  F.relu(self.conv_angle(feature, edge_index))
+        feature_out = self.bn_angle(feature_out)
+        return feature_out
+
+
 
 # -------------------------------------------------------------------
 
@@ -223,11 +299,13 @@ class CEGAN(nn.Module):
         gbf_bond,
         gbf_angle,
         n_conv_edge=3,
+        n_conv_angle=2,
         h_fea_edge=128,
         h_fea_angle=128,
         n_classification=2,
         pooling=False,
         embedding=False,
+        num_MLP=0,
     ):
 
         super(CEGAN, self).__init__()
@@ -248,7 +326,7 @@ class CEGAN(nn.Module):
         self.AngConv = nn.ModuleList(
             [
                 ConvAngle(self.bond_fea_len, self.angle_fea_len)
-                for _ in range(n_conv_edge - 1)
+                for _ in range(n_conv_angle)
             ]
         )
 
@@ -257,6 +335,15 @@ class CEGAN(nn.Module):
 
         self.bn = nn.LayerNorm(h_fea_edge + h_fea_angle)
         self.conv_to_fc_softplus = nn.Softplus()
+
+        # EJG add a multi-layer perceptron
+        self.Emily_MLP = nn.ModuleList(
+            [
+                EmilyLin(h_fea_edge + h_fea_angle)
+                for _ in range(num_MLP)
+            ]
+            
+        )
 
         self.out = nn.Linear(h_fea_edge + h_fea_angle, n_classification)
 
@@ -314,6 +401,11 @@ class CEGAN(nn.Module):
         # print(f'after if self.embedding CEGAN_crys_fea.size(): {crys_fea.size()}')
 
         crys_fea = self.dropout(crys_fea)
+        # EJG MLP
+        # crys_fea = self.Emily_MLP(crys_fea)
+        for layer in self.Emily_MLP:
+            crys_fea = layer(crys_fea)
+        # end EJG MLP
         out = self.out(crys_fea)
         # print(out.shape)
         # print(f'CEGAN_out.size(): {out.size()}')
@@ -342,9 +434,14 @@ class GIN(nn.Module):
         gbf_bond,
         gbf_angle,
         n_classification,
+        n_conv_edge,
+        n_conv_angle,
+        h_fea_edge,
+        h_fea_angle,
         neigh,
         pooling,
         embedding,
+        num_MLP,
         ):
         super(GIN, self).__init__()
         # keep the CEGAN bond and angle features
@@ -360,43 +457,63 @@ class GIN(nn.Module):
         # edge_angle_fea_len = self.bond_fea_len + self.angle_fea_len
         # print(f'self.bond_fea_len: {self.bond_fea_len}')
         self.nn1_bond = nn.Sequential(
-            nn.Linear(self.bond_fea_len*neigh, 32),
+            nn.Linear(self.bond_fea_len*neigh, h_fea_edge),
             nn.ReLU(),
-            nn.Linear(32,32)
+            nn.Linear(h_fea_edge,h_fea_edge)
         )
         self.nn1_angle = nn.Sequential(
-            nn.Linear(self.angle_fea_len*neigh*neigh, 32),
+            nn.Linear(self.angle_fea_len*neigh*neigh, h_fea_angle),
             nn.ReLU(),
-            nn.Linear(32,32)
+            nn.Linear(h_fea_angle,h_fea_angle)
         )
         self.conv1_bond = GINConv(self.nn1_bond)
         self.conv1_angle = GINConv(self.nn1_angle)
-        self.bn1_bond = nn.BatchNorm1d(32)
-        self.bn1_angle = nn.BatchNorm1d(32)
-        self.nn2_bond = nn.Sequential(
-            nn.Linear(32, 32),
-            nn.ReLU(),
-            nn.Linear(32, 32)
-        )
-        self.nn2_angle = nn.Sequential(
-            nn.Linear(32, 32),
-            nn.ReLU(),
-            nn.Linear(32, 32)
-        )
-        self.conv2_bond = GINConv(self.nn2_bond)
-        self.conv2_angle = GINConv(self.nn2_angle)
-        self.bn2_bond = nn.BatchNorm1d(32)
-        self.bn2_angle = nn.BatchNorm1d(32)
+        self.bn1_bond = nn.BatchNorm1d(h_fea_edge)
+        self.bn1_angle = nn.BatchNorm1d(h_fea_angle)
+        # self.nn2_bond = nn.Sequential(
+        #     nn.Linear(32, 32),
+        #     nn.ReLU(),
+        #     nn.Linear(32, 32)
+        # )
+        # self.nn2_angle = nn.Sequential(
+        #     nn.Linear(32, 32),
+        #     nn.ReLU(),
+        #     nn.Linear(32, 32)
+        # )
+        # self.conv2_bond = GINConv(self.nn2_bond)
+        # self.conv2_angle = GINConv(self.nn2_angle)
+        # self.bn2_bond = nn.BatchNorm1d(32)
+        # self.bn2_angle = nn.BatchNorm1d(32)
         # self.bn = nn.LayerNorm(64)
         # self.conv_to_fc_softplus = nn.Softplus()
+        self.EmGIN_bond = nn.ModuleList(
+            [
+                EmilyGIN_bond(h_fea_edge)
+                for _ in range(n_conv_edge - 1)
+            ]
+        )
 
-        self.fc1_bond = Linear(32, 16)
-        self.fc1_angle = Linear(32, 16)
-        self.fc2_bond = Linear(16, 8)
-        self.fc2_angle = Linear(16, 8)
+        self.EmGIN_angle = nn.ModuleList(
+            [
+                EmilyGIN_angle(h_fea_edge)
+                for _ in range(n_conv_angle - 1)
+            ]
+        )
+
+        self.fc1_bond = Linear(h_fea_edge, int(h_fea_edge/2))
+        self.fc1_angle = Linear(h_fea_angle, int(h_fea_angle/2))
+        self.fc2_bond = Linear(int(h_fea_edge/2), int(h_fea_edge/4))
+        self.fc2_angle = Linear(int(h_fea_angle/2), int(h_fea_angle/4))
+
+        self.Emily_MLP = nn.ModuleList(
+            [
+                EmilyLin(int(h_fea_edge/4) + int(h_fea_angle/4))
+                for _ in range(num_MLP)
+            ]
+        )
         dropout_prob = 0.5
         self.dropout_layer = nn.Dropout(p=dropout_prob)
-        self.fc = nn.Linear(16, n_classification)
+        self.fc = nn.Linear(int(h_fea_edge/4) + int(h_fea_angle/4), n_classification)
         # stop here for now...
     def forward(self, data):
         bond_fea, angle_fea, species, nbr_idx, crys_idx = data
@@ -427,10 +544,16 @@ class GIN(nn.Module):
 
         bond_fea_out = self.bn1_bond(bond_fea_out)
         angle_fea_out = self.bn1_angle(angle_fea_out)
-        bond_fea_out = F.relu(self.conv2_bond(bond_fea_out, edge_index))
-        angle_fea_out = F.relu(self.conv2_angle(angle_fea_out, edge_index))
-        bond_fea_out = self.bn2_bond(bond_fea_out)
-        angle_fea_out = self.bn2_angle(angle_fea_out)
+        # bond_fea_out = F.relu(self.conv2_bond(bond_fea_out, edge_index))
+        # angle_fea_out = F.relu(self.conv2_angle(angle_fea_out, edge_index))
+        # bond_fea_out = self.bn2_bond(bond_fea_out)
+        # angle_fea_out = self.bn2_angle(angle_fea_out)
+
+        for bond_layer in self.EmGIN_bond:
+            bond_fea_out = bond_layer(bond_fea_out, edge_index)
+
+        for angle_layer in self.EmGIN_angle:
+            angle_fea_out = angle_layer(angle_fea_out, edge_index)
 
         bond_fea_out = self.fc1_bond(bond_fea_out)
         angle_fea_out = self.fc1_angle(angle_fea_out)
@@ -438,6 +561,11 @@ class GIN(nn.Module):
         angle_fea_out = self.fc2_angle(angle_fea_out)
 
         crys_fea = torch.cat([bond_fea_out, angle_fea_out], dim=1)
+
+        # EJG MLP
+        for layer in self.Emily_MLP:
+            crys_fea = layer(crys_fea)
+        # end EJG MLP
         crys_fea = self.dropout_layer(crys_fea)
 
         if self.pooling:
@@ -469,10 +597,16 @@ class mySAGE(nn.Module):
         self,
         gbf_bond,
         gbf_angle,
+        n_conv_edge,
+        n_conv_angle,
+        h_fea_edge,
+        h_fea_angle,
         n_classification,
         neigh,
         pool,
         embedding,
+        dropout_prob,
+        num_MLP,
         ):
         super(mySAGE, self).__init__()
         self.pool = pool
@@ -481,27 +615,54 @@ class mySAGE(nn.Module):
         self.angle_fea_len = gbf_angle["steps"]
         self.gbf_bond = gbf_expansion(gbf_bond)
         self.gbf_angle = gbf_expansion(gbf_angle)
-        hidden_size = 128
-        # add one SAGEConv layer
+        # hidden_size = 128
+        self.dropout_prob = dropout_prob
+        # add one SAGEConv layer (1st layer is fixed because it changes size from input to hidden size)
         self.conv1_bond = SAGEConv(
-            self.bond_fea_len*neigh, hidden_size
+            self.bond_fea_len*neigh, h_fea_edge
         )
         self.conv1_angle = SAGEConv(
-            self.angle_fea_len*neigh*neigh, hidden_size
+            self.angle_fea_len*neigh*neigh, h_fea_angle
         )
         # end add one SAGEConv layer
 
-        # add a second SAGEConv layer
-        self.conv2_bond = SAGEConv(
-            hidden_size, hidden_size
-        )
-        self.conv2_angle = SAGEConv(
-            hidden_size, hidden_size
+        # # add a second SAGEConv layer
+        # self.conv2_bond = SAGEConv(
+        #     hidden_size, hidden_size
+        # )
+        # self.conv2_angle = SAGEConv(
+        #     hidden_size, hidden_size
+        # )
+        # # end add a second SAGEConv layer
+
+        # add more bond SAGE convolutions until we reach the n_conv_edge hyperparameter
+        self.EmSAGE_bond = nn.ModuleList(
+            [
+                EmilySAGE_bond(h_fea_edge)
+                for _ in range(n_conv_edge - 1)
+                # note: it is n_conv_edge - 1 because we need to have the first SAGE layer fixed
+                # in order to reduce the feature size to the hidden size
+            ]
         )
 
-        # end add a second SAGEConv layer
+        # add more angle SAGE convolutions until we reach the n_conv_angle hyperparameter
+        self.EmSAGE_angle = nn.ModuleList(
+            [
+                EmilySAGE_angle(h_fea_angle)
+                for _ in range(n_conv_angle - 1)
+                # note: it is n_conv_angle - 1 because the first layer reduces the feature size to the hidden size
+            ]
+        )
 
-        self.fc = nn.Linear(2*hidden_size, n_classification)
+        # EJG add a multi-layer perceptron
+        self.Emily_MLP = nn.ModuleList(
+            [
+                EmilyLin(h_fea_edge + h_fea_angle)
+                for _ in range(num_MLP)
+            ]
+        )
+
+        self.fc = nn.Linear(h_fea_edge + h_fea_angle, n_classification)
 
     def forward(self, data):
         bond_fea, angle_fea, species, nbr_idx, crys_idx = data
@@ -519,25 +680,44 @@ class mySAGE(nn.Module):
         angle_fea_out = self.conv1_angle(angle_fea_2d, edge_index)
         bond_fea_out = F.relu(bond_fea_out)
         angle_fea_out = F.relu(angle_fea_out)
-        bond_fea_out = F.dropout(bond_fea_out, p=0.2)
-        angle_fea_out = F.dropout(angle_fea_out, p=0.2)
+        bond_fea_out = F.dropout(bond_fea_out, p=self.dropout_prob)
+        angle_fea_out = F.dropout(angle_fea_out, p=self.dropout_prob)
         # end 1st Graph SAGE layer on bond and angles
         # 2nd SAGE layer
-        bond_fea_out = self.conv2_bond(bond_fea_out, edge_index)
-        angle_fea_out = self.conv2_angle(angle_fea_out, edge_index)
-        bond_fea_out = F.relu(bond_fea_out)
-        angle_fea_out = F.relu(angle_fea_out)
-        bond_fea_out = F.dropout(bond_fea_out, p=0.2)
-        angle_fea_out = F.dropout(angle_fea_out, p=0.2)
+        print(f'after 1st angle SAGE conv angle_fea_out.shape: {angle_fea_out.shape}')
+        for bond_layer in self.EmSAGE_bond:
+            bond_fea_out = bond_layer(bond_fea_out, edge_index)
+            bond_fea_out = F.relu(bond_fea_out)
+            bond_fea_out = F.dropout(bond_fea_out, p=self.dropout_prob)
+        # bond_fea_out = self.conv2_bond(bond_fea_out, edge_index)
+        # angle_fea_out = self.conv2_angle(angle_fea_out, edge_index)
+        # bond_fea_out = F.relu(bond_fea_out)
+        # angle_fea_out = F.relu(angle_fea_out)
+        # bond_fea_out = F.dropout(bond_fea_out, p=0.2)
+        # angle_fea_out = F.dropout(angle_fea_out, p=0.2)
         # end 2nd SAGE layer
+        for angle_layer in self.EmSAGE_angle:
+            angle_fea_out = angle_layer(angle_fea_out, edge_index)
+            angle_fea_out = F.relu(angle_fea_out)
+            angle_fea_out = F.dropout(angle_fea_out, p=self.dropout_prob)
+
+        # print(f'before cat angle_fea_out.shape: {angle_fea_out.shape}')
 
         crys_fea = torch.cat([bond_fea_out, angle_fea_out], dim=1)
+        # print(f'crys_fea.shape: {crys_fea.shape}')
+        # print(f'angle_fea_out.shape: {angle_fea_out.shape}')
+        # print(f'bond_fea_out.shape: {bond_fea_out.shape}')
 
         if self.pool:
             crys_fea = self.pool_function(crys_fea, crys_idx)
 
         if self.embedding:
             embed = crys_fea
+
+        # EJG MLP
+        for layer in self.Emily_MLP:
+            crys_fea = layer(crys_fea)
+        # end EJG MLP
 
         out = self.fc(crys_fea)
 

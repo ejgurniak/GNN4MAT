@@ -130,7 +130,7 @@ def train(
     def print_validation_details(model, val_loader, criterion, epoch):
         # out_file = open('validation_details.txt', 'a')
         # out_file.write('inside subroutine print_validation_details')
-        val_labels_filename = f"./validation_labels/epoch_val_labels.{epoch}.txt"
+        val_labels_filename = f"./validation_labels/best_epoch_val_labels.txt"
         val_labels_file = open(val_labels_filename, 'w')
         predicted_labels = []
         val_indices = []
@@ -194,8 +194,7 @@ def train(
                 outputs = model(data2) #HERE - try just one argument
                 loss = criterion(outputs, labels)
                 # Accumulate the loss across batches
-                val_loss += loss.item() * settings.batch_size #remember: PyTorch Cross Entropy Loss divides by number of items with default parameter reduction='mean'
-                # if you choose reduction='sum' when setting up cross entropy loss, do not need to multiply by batch_size
+                val_loss += loss.item() * settings.batch_size #CHECK HERE - may be incorrect
         # Compute the average loss across the validation set
         val_loss = val_loss / len(val_loader)
 
@@ -218,6 +217,7 @@ def train(
         optimizer = torch.optim.Adam(
             model.parameters(),
             lr=settings.learning_rate,
+            betas=(0.999,0.999),
             weight_decay=settings.weight_decay,
         )
 
@@ -413,6 +413,9 @@ if os.path.exists("custom_config.yaml"):
     with open("custom_config.yaml", "r") as file:
         custom_dict = yaml.full_load(file)
         settings = Settings(**custom_dict)
+        # print(f'type(settings): {type(settings)}')
+        # print(f'settings.epochs = {settings.epochs}')
+        # print(f'settings.num_MLP: {settings.num_MLP}')
 else:
     settings = Settings()
 
@@ -464,37 +467,52 @@ if torch.cuda.is_available():
 
 # end random number seed
 
+# choose the model and load it
+
 if current_model == "GANN":
     from model import CEGAN
     net = CEGAN(
         settings.gbf_bond,
         settings.gbf_angle,
         n_conv_edge=settings.n_conv_edge,
+        n_conv_angle=settings.n_conv_angle,
         h_fea_edge=settings.h_fea_edge,
         h_fea_angle=settings.h_fea_angle,
         n_classification=settings.n_classification,
         pooling=settings.pooling,
         embedding=settings.embedding,
+        num_MLP=settings.num_MLP,
     )
 elif current_model == "GIN":
     from model import GIN
     net = GIN(
         settings.gbf_bond,
         settings.gbf_angle,
+        n_conv_edge=settings.n_conv_edge,
+        n_conv_angle=settings.n_conv_angle,
+        h_fea_edge=settings.h_fea_edge,
+        h_fea_angle=settings.h_fea_angle,
         n_classification=settings.n_classification,
         neigh=settings.neighbors,
         pooling=settings.pooling,
         embedding=settings.embedding,
+        num_MLP=settings.num_MLP,
     )
 elif current_model == "SAGE":
     from model import mySAGE
     net = mySAGE(
         settings.gbf_bond,
         settings.gbf_angle,
+        n_conv_edge=settings.n_conv_edge,
+        n_conv_angle=settings.n_conv_angle,
+        h_fea_edge=settings.h_fea_edge,
+        h_fea_angle=settings.h_fea_angle,
         n_classification=settings.n_classification,
         neigh=settings.neighbors,
         pool=settings.pooling,
         embedding=settings.embedding,
+        dropout_prob=settings.dropout_prob,
+        num_MLP=settings.num_MLP,
     )
 elif current_model == "RGCN":
     from model import myRGCN
