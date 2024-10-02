@@ -865,4 +865,4 @@ def get_edge_index(neighbor_list):
             edge_index[1][pointer] = dest
             pointer += 1
     # print(f'edge_index: {edge_index}')
-    return edge_index # dummy return statement until we can get it working
+    return edge_index
