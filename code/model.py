@@ -684,7 +684,7 @@ class mySAGE(nn.Module):
         angle_fea_out = F.dropout(angle_fea_out, p=self.dropout_prob)
         # end 1st Graph SAGE layer on bond and angles
         # 2nd SAGE layer
-        print(f'after 1st angle SAGE conv angle_fea_out.shape: {angle_fea_out.shape}')
+        # print(f'after 1st angle SAGE conv angle_fea_out.shape: {angle_fea_out.shape}')
         for bond_layer in self.EmSAGE_bond:
             bond_fea_out = bond_layer(bond_fea_out, edge_index)
             bond_fea_out = F.relu(bond_fea_out)
@@ -865,4 +865,4 @@ def get_edge_index(neighbor_list):
             edge_index[1][pointer] = dest
             pointer += 1
     # print(f'edge_index: {edge_index}')
-    return edge_index
+    return edge_index # dummy return statement until we can get it working

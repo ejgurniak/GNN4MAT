@@ -9,9 +9,10 @@ h_fea_angle: 256
 h_fea_edge: 256
 learning_rate: 0.01
 n_classification: 6
-n_conv_edge: 1
+n_conv_edge: 2
+n_conv_angle: 2
 neighbors: 15
-num_workers: 1
+num_workers: 0
 pin_memory: true
 rcut: 6
 resume: true
@@ -19,5 +20,7 @@ search_delta: 20
 search_type: global
 step_size: 100
 test_size: 0
-train_size: 9600
-val_size: 600
+train_size: 8
+val_size: 2
+num_MLP: 0
+dropout_prob: 0.2

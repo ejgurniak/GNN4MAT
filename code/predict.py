@@ -108,6 +108,7 @@ if current_model == "GANN":
         settings.gbf_bond,
         settings.gbf_angle,
         n_conv_edge=settings.n_conv_edge,
+        n_conv_angle=settings.n_conv_angle,
         h_fea_edge=settings.h_fea_edge,
         h_fea_angle=settings.h_fea_angle,
         n_classification=settings.n_classification,
