@@ -81,6 +81,9 @@ python train.py ./train_1020samples model_checkpoints log.model SAGE
 
 option 4: run our Relational Graph Convolutional Network
 
+<img width="1801" height="271" alt="RGCN_architecture_300ppi" src="https://github.com/user-attachments/assets/40771c79-ddfe-4103-a41e-610038d0009c" />
+
+
 ```
 python train.py ./train_1020samples model_checkpoints log.model RGCN
 ```
