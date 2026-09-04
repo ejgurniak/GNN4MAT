@@ -62,6 +62,9 @@ python train.py ./train_1020samples model_checkpoints/ log.model GANN
 
 option 2: run our Graph Isomorphism Network
 
+<img width="1787" height="273" alt="GIN_architecture_300ppi" src="https://github.com/user-attachments/assets/0b3e7af6-9fc3-4b4a-a396-8d523a65d970" />
+
+
 ```
 python train.py ./train_1020samples model_checkpoints log.model GIN
 ```
