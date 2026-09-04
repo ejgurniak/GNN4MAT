@@ -71,7 +71,8 @@ python train.py ./train_1020samples model_checkpoints log.model GIN
 
 option 3: run our GraphSAGE model
 
-<img width="1197" height="271" alt="SAGE_architecture_v2_300ppi" src="https://github.com/user-attachments/assets/65320106-24f7-4d8e-b156-3730d85644cf" />
+<img width="1801" height="271" alt="SAGE_architecture_300ppi" src="https://github.com/user-attachments/assets/ef0f9ef8-deb4-43cc-9860-f7843c31fbd1" />
+
 
 
 ```
