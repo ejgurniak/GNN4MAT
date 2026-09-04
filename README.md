@@ -53,6 +53,9 @@ cp ./code/* .
 
 option 1: run the Crystal Edge Graph Attention Neural Network, by Banik et al (https://github.com/sbanik2/CEGANN)
 
+<img width="1787" height="273" alt="GANN_architecture_300ppi" src="https://github.com/user-attachments/assets/6b2d64f7-1b34-4a2d-a525-f984f99980f3" />
+
+
 ```
 python train.py ./train_1020samples model_checkpoints/ log.model GANN
 ```
