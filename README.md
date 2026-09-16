@@ -1,5 +1,8 @@
 # GNN4MAT: Graph Neural Networks for Materials
 
+<img width="1083" height="390" alt="graphical_abstract_v2_300ppi" src="https://github.com/user-attachments/assets/2fa8fec9-e19a-491a-9ce4-1329e7f99f4e" />
+
+
 ## Run seven different graph neural networks for materials science with one source code
 
 For homogeneous models, go to "Homogeneous models" section below. For heterogeneous models, go to "Heterogeneous models" section below.
