@@ -1,4 +1,5 @@
 # GNN4MAT: Graph Neural Networks for Materials
+## Emily J Gurniak
 
 <img width="1083" height="390" alt="graphical_abstract_v2_300ppi" src="https://github.com/user-attachments/assets/2fa8fec9-e19a-491a-9ce4-1329e7f99f4e" />
 
